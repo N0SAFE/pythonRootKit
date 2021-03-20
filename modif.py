@@ -88,5 +88,3 @@ def update(data, delete=False):
     downloadFileGithub(data)
     moveFileFromDir(dir)
     supDir(dir)
-    
-#fichiers modifier
