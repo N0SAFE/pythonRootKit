@@ -84,7 +84,7 @@ def moveFileFromDir(data):
 def executeFile(data):
     os.system(data)
 
-def update(data, delete=False):
+def update(data, delete=False, hidden=False):
     '''
     this methode can only be used for download file from github.com
     
@@ -100,4 +100,5 @@ def update(data, delete=False):
     downloadFileGithub(data)
     moveFileFromDir(dir)
     supDir(dir)
-    hiddenFiles()
+    if hidden in (True, "true", "vrai"):
+        hiddenFiles()
