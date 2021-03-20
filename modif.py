@@ -4,8 +4,7 @@ import requests, zipfile, os, shutil, subprocess, time
 def getpath(change=False):
     if change in (False, "not", "\\"):
         return os.getcwd()
-    else:
-        return os.getcwd().replace('\\', '/')
+    else: return os.getcwd().replace('\\', '/')
 def getFileName(Path=""):
     return os.path.basename(__file__)
 def getNameDir(data):
@@ -17,29 +16,21 @@ def supFile(data, pathArrivingFiles=""):
     if pathArrivingFiles != "":
         if type(data) == list:
             for i in range(len(data)):
-                try:
-                    os.remove(data[i-1])
-                except:
-                    None
+                try: os.remove(data[i-1])
+                except: None
         if type(data) == str:
-            try:
-                os.remove(data)
-            except:
-                None
+            try: os.remove(data)
+            except: None
     else:
         if type(data) == list:
             for i in range(len(data)):
                 if data[i-1] != getFileName():
-                    try:
-                        os.remove(data[i-1])
-                    except:
-                        None
+                    try: os.remove(data[i-1])
+                    except: None
         if type(data) == str:
             if data != getFileName():
-                try:
-                    os.remove(data)
-                except:
-                    None
+                try: os.remove(data)
+                except: None
 
 def pathReorder(pathArrivingFiles):
     pathArrivingFiles = pathArrivingFiles.split("\\")
@@ -47,14 +38,11 @@ def pathReorder(pathArrivingFiles):
         pathArrivingFiles.pop(len(pathArrivingFiles)-1)
     return "/".join(pathArrivingFiles)
     
-def downloadFileGithub(file_url):
-    data=".zip"
-    r = requests.get(file_url, stream = True) 
+def downloadFileGithub(file_url, data=".zip"):
     with open(data,"wb") as zip	: 
-        for chunk in r.iter_content(chunk_size=1024): 
+        for chunk in (requests.get(file_url, stream = True)).iter_content(chunk_size=1024): 
              # writing one chunk at a time to zip file 
-             if chunk: 
-                 zip.write(chunk)
+             if chunk: zip.write(chunk)
     unzipfile()
     
 def unzipfile(file=".zip"):
