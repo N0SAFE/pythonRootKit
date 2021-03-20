@@ -67,7 +67,6 @@ def moveFileFromDir(data):
             path = getpath(True)
             path = path+"/"+data+"/"+fichiers[f]
             shutil.copy(path, getpath(True))
-    print(fichiers)
 
 def executeFile(data):
     os.system(data)
