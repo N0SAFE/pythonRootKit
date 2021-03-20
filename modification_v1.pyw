@@ -39,12 +39,12 @@ def moveFileFromDir(data):
         if fichiers[f] != getFileName():
             shutil.copy(getpath(True)+"/"+data+"/"+fichiers[f], getpath(True))
 
-try: import modif
+try: 
+    import modif
+    modif.update(data, delete=True)
 except:
     dir = getNameDir(data)
     downloadFileGithub(data)
     moveFileFromDir(dir)
     supDir(dir)
     os.system(getFileName())
-
-modif.update(data, delete=True)
