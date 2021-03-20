@@ -26,7 +26,7 @@ def unzipfile(file=".zip"):
     with zipfile.ZipFile(file, 'r') as zip: 
         # extraire tous les fichiers
         zip.extractall() 
-    os.remove(data)
+    os.remove(file)
 
 def sortNameFile(data):
     from os.path import isfile, join
