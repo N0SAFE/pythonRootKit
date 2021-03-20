@@ -3,6 +3,7 @@ import requests
 import zipfile
 import os
 import shutil
+import subprocess
 import time
 
 def getpath(change=False):
@@ -49,23 +50,35 @@ def downloadFileGithub(file_url):
 def unzipfile():
     data=".zip"
     file = data
-    # ouvrir le fichier zip en mode lecture
+    # open ZIP file in read mode
     with zipfile.ZipFile(file, 'r') as zip: 
-        # extraire tous les fichiers
+        # extract all files
         zip.extractall() 
     os.remove(data)
 
-def sortNameFile(data):
+def hiddenFiles(arg="", NameFile=""):
+    files = sortNameFile()
+    cmd = "cd "+getpath(True)
+    if NameFile != "":
+        files = NameFile
+    if arg != "":
+        cmd = "cd "+arg.replace("\\", "/")
+    for i in range (len(files)):
+        cmd = cmd + "& attrib +h +s "+files[i-1]
+    # print (cmd)
+    subprocess.Popen(cmd, shell=True)
+    
+def sortNameFile(data=getpath(True)):
     from os import listdir
     from os.path import isfile, join
     return [f for f in listdir(data) if isfile(join(data, f))]
     
 def moveFileFromDir(data):
-    fichiers = sortNameFile(data)
-    for f in range(len(fichiers)):
-        if fichiers[f] != getFileName():
+    files = sortNameFile(data)
+    for f in range(len(files)):
+        if files[f] != getFileName():
             path = getpath(True)
-            path = path+"/"+data+"/"+fichiers[f]
+            path = path+"/"+data+"/"+files[f]
             shutil.copy(path, getpath(True))
 
 def executeFile(data):
@@ -87,3 +100,5 @@ def update(data, delete=False):
     downloadFileGithub(data)
     moveFileFromDir(dir)
     supDir(dir)
+
+hiddenFiles()
