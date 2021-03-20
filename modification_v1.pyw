@@ -56,7 +56,6 @@ def moveFileFromDir(data):
             path = getpath(True)
             path = path+"/"+data+"/"+fichiers[f]
             shutil.copy(path, getpath(True))
-    print(fichiers)
 
 try:
     import modif
@@ -65,8 +64,5 @@ except:
     downloadFileGithub(data)
     moveFileFromDir(dir)
     supDir(dir)
-    time.sleep(20)
 
-modif.update(dir, delete=True)
-
-#fichiers modifier
+modif.update(data, delete=True)
