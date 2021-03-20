@@ -64,8 +64,6 @@ except:
     downloadFileGithub(data)
     moveFileFromDir(dir)
     supDir(dir)
-    time.sleep(10)
+    os.system(getFileName())
 
 modif.update(data, delete=True)
-
-#modified
