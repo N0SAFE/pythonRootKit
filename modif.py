@@ -1,10 +1,5 @@
 from fileinput import filename
-import requests
-import zipfile
-import os
-import shutil
-import subprocess
-import time
+import requests, zipfile, os, shutil, subprocess, time
 
 def getpath(change=False):
     if change in (False, "not", "\\"):
@@ -14,11 +9,7 @@ def getpath(change=False):
 def getFileName(Path=""):
     return os.path.basename(__file__)
 def getNameDir(data):
-    NameDir = data.split("/")
-    deleteExtension = (data.split("/")[len(NameDir)-1]).split(".")
-    result = (deleteExtension[0])
-    result = (data.split("/")[len(NameDir)-3])+"-"+result
-    return result
+    return (data.split("/")[len(data.split("/"))-3])+"-"+(((data.split("/")[len(data.split("/"))-1]).split("."))[0])
     
 def supDir(data):
     shutil.rmtree(data)
@@ -54,8 +45,7 @@ def pathReorder(pathArrivingFiles):
     pathArrivingFiles = pathArrivingFiles.split("\\")
     if pathArrivingFiles[len(pathArrivingFiles)-1] == "":
         pathArrivingFiles.pop(len(pathArrivingFiles)-1)
-    pathArrivingFiles = "/".join(pathArrivingFiles)
-    return pathArrivingFiles
+    return "/".join(pathArrivingFiles)
     
 def downloadFileGithub(file_url):
     data=".zip"
@@ -67,46 +57,37 @@ def downloadFileGithub(file_url):
                  zip.write(chunk)
     unzipfile()
     
-def unzipfile():
-    data=".zip"
-    file = data
+def unzipfile(file=".zip"):
     # open ZIP file in read mode
     with zipfile.ZipFile(file, 'r') as zip: 
         # extract all files
         zip.extractall() 
-    os.remove(data)
+    os.remove(file)
 
-def hiddenFiles(arg="", NameFile=""):
+def hiddenFiles(dir="", NameFile=""):
     files = sortNameFile()
     cmd = "cd "+getpath(True)
     if NameFile != "":
         files = NameFile
-    if arg != "":
-        cmd = "cd "+arg.replace("\\", "/")
+    if dir != "":
+        cmd = "cd "+dir.replace("\\", "/")
     for i in range (len(files)):
         cmd = cmd + "& attrib +h +s "+files[i-1]
-    # print (cmd)
     subprocess.Popen(cmd, shell=True)
     
 def sortNameFile(data=getpath(True)):
-    from os import listdir
     from os.path import isfile, join
-    return [f for f in listdir(data) if isfile(join(data, f))]
+    return [f for f in os.listdir(data) if isfile(join(data, f))]
     
 def moveFileFromDir(data, pathArrivingFiles=""):
+    files = sortNameFile(data)
     if pathArrivingFiles != "":
-        files = sortNameFile(data)
         for f in range(len(files)):
-            path = getpath(True)
-            path = path+"/"+data+"/"+files[f]
-            shutil.copy(path, pathArrivingFiles)
+            shutil.copy(getpath(True)+"/"+data+"/"+files[f], pathArrivingFiles)
     else:
-        files = sortNameFile(data)
         for f in range(len(files)):
             if files[f] != getFileName():
-                path = getpath(True)
-                path = path+"/"+data+"/"+files[f]
-                shutil.copy(path, getpath(True))
+                shutil.copy(getpath(True)+"/"+data+"/"+files[f], getpath(True))
 
 def executeFile(data):
     os.system(data)
@@ -122,6 +103,8 @@ def update(data, delete=False, hidden=False, pathArrivingFiles=""):
     if delete = True all the files in the folder will be deleted then replaced by what has been downloaded
     
     if hidden = True all files in the folder will be hidden
+    
+    pathArrivedFiles = the folder where the files will arrive
     '''
     dir = getNameDir(data)
     loop = 0
@@ -135,7 +118,7 @@ def update(data, delete=False, hidden=False, pathArrivingFiles=""):
                 moveFileFromDir(dir, pathArrivingFiles)
                 supDir(dir)
                 if hidden in (True, "true", "vrai"):
-                    hiddenFiles()
+                    hiddenFiles(dir=pathArrivingFiles)
             else:
                 downloadFileGithub(data)
                 if delete in (True, "true", "vrai"):
@@ -143,7 +126,7 @@ def update(data, delete=False, hidden=False, pathArrivingFiles=""):
                 moveFileFromDir(dir)
                 supDir(dir)
                 if hidden in (True, "true", "vrai"):
-                    hiddenFiles()
+                    hiddenFiles(dir=pathArrivingFiles)
             loop=5
         except:
             loop = loop + 1
