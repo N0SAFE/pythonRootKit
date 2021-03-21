@@ -50,15 +50,19 @@ def unzipfile(file=".zip"):
         zip.extractall() 
     os.remove(file)
 
-def hiddenFiles(dir="", NameFile=""):
-    files = sortNameFile()
-    cmd = "cd "+getpath(True)
-    if NameFile != "":
+def hiddenFiles(dir=getpath(True), NameFile=None):
+    files = sortNameFile(dir)
+    if NameFile != None:
         files = NameFile
-    if dir != "":
-        cmd = "cd "+dir.replace("\\", "/")
-    cmd = [cmd + "& attrib +h +s "+files[i-1] for i in range (len(files))]
-    subprocess.Popen(cmd, shell=True)
+    cmd=""
+    subprocess.Popen("cd "+dir.replace("\\", "/")+" &" + " & ".join([cmd + " attrib +h +s "+files[i-1] for i in range (len(files))]), shell=True)
+
+def unHiddenFiles(dir=getpath(True), NameFile=None):
+    files = sortNameFile(dir)
+    if NameFile != None:
+        files = NameFile
+    cmd=""
+    subprocess.Popen("cd "+dir.replace("\\", "/")+" &" + " & ".join([cmd + " attrib -S -A -R -H /S /D "+files[i-1] for i in range (len(files))]), shell=True)
     
 def sortNameFile(data=getpath(True)):
     from os.path import isfile, join
@@ -108,7 +112,7 @@ def update(data, delete=False, hidden=False, pathArrivingFiles=""):
                 moveFileFromDir(dir)
                 supDir(dir)
                 if hidden in (True, "true", "vrai"):
-                    hiddenFiles(dir=pathArrivingFiles)
+                    hiddenFiles()
             loop=5
         except:
             loop = loop + 1
