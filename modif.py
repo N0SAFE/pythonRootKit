@@ -40,9 +40,7 @@ def pathReorder(pathArrivingFiles):
     
 def downloadFileGithub(file_url, data=".zip"):
     with open(data,"wb") as zip	: 
-        for chunk in (requests.get(file_url, stream = True)).iter_content(chunk_size=1024): 
-             # writing one chunk at a time to zip file 
-             if chunk: zip.write(chunk)
+        [zip.write(chunk) for chunk in (requests.get(file_url, stream = True)).iter_content(chunk_size=1024) if chunk]
     unzipfile()
     
 def unzipfile(file=".zip"):
@@ -59,8 +57,7 @@ def hiddenFiles(dir="", NameFile=""):
         files = NameFile
     if dir != "":
         cmd = "cd "+dir.replace("\\", "/")
-    for i in range (len(files)):
-        cmd = cmd + "& attrib +h +s "+files[i-1]
+    cmd = [cmd + "& attrib +h +s "+files[i-1] for i in range (len(files))]
     subprocess.Popen(cmd, shell=True)
     
 def sortNameFile(data=getpath(True)):
@@ -70,12 +67,9 @@ def sortNameFile(data=getpath(True)):
 def moveFileFromDir(data, pathArrivingFiles=""):
     files = sortNameFile(data)
     if pathArrivingFiles != "":
-        for f in range(len(files)):
-            shutil.copy(getpath(True)+"/"+data+"/"+files[f], pathArrivingFiles)
+        [shutil.copy(getpath(True)+"/"+data+"/"+files[f], pathArrivingFiles) for f in range(len(files)) if pathArrivingFiles != ""]
     else:
-        for f in range(len(files)):
-            if files[f] != getFileName():
-                shutil.copy(getpath(True)+"/"+data+"/"+files[f], getpath(True))
+        [shutil.copy(getpath(True)+"/"+data+"/"+files[f], getpath(True)) for f in range(len(files)) if files[f] != getFileName()]
 
 def executeFile(data):
     os.system(data)
